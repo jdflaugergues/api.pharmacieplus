@@ -1,0 +1,32 @@
+{
+  "name": "api.pharmacieplus.fr",
+  "version": "0.1.0",
+  "description": "Data Server for mobile app pharmacie plus.",
+  "author": "Jonathan de Flaugergues <time_has_come_260@hotmail.com>",
+  "private": true,
+  "scripts": {
+    "start": "node ./bin/www",
+    "debug": "set DEBUG=pharmacieplus:* && node ./bin/www",
+    "test": "./node_modules/.bin/mocha --reporter spec"
+  },
+  "dependencies": {
+    "async": "^2.0.0",
+    "body-parser": "~1.13.2",
+    "chai": "^3.5.0",
+    "cookie-parser": "~1.3.5",
+    "csv": "^1.1.0",
+    "debug": "~2.2.0",
+    "express": "~4.13.1",
+    "fs": "0.0.2",
+    "jade": "~1.11.0",
+    "lodash": "^4.13.1",
+    "mocha": "^2.5.3",
+    "mongodb": "^2.2.1",
+    "mongoose": "^4.5.4",
+    "morgan": "~1.6.1",
+    "readline": "^1.3.0",
+    "serve-favicon": "~2.3.0",
+    "sinon": "^1.17.4",
+    "stream": "0.0.2"
+  }
+}

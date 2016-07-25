@@ -1,0 +1,17 @@
+doctype html
+html
+    head
+        title='Mocha Tests'
+        link(rel='stylesheet', href='node_modules/mocha/mocha.css')
+    body
+        div(id='mocha')
+        script(src='https://code.jquery.com/jquery-3.1.0.js')
+        script(src='node_modules/mocha/mocha.js')
+        script(src='node_modules/sinon/pkg/sinon-1.17.4.js')
+        script(src='node_modules/chai/chai.js')
+        script.
+            mocha.setup('bdd');
+        script(src='/javascripts/test.js')
+        script.
+            mocha.run();
+

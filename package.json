@@ -4,6 +4,7 @@
   "description": "Data Server for mobile app pharmacie plus.",
   "author": "Jonathan de Flaugergues <time_has_come_260@hotmail.com>",
   "private": true,
+  "main": "./bin/www",
   "scripts": {
     "start": "node ./bin/www",
     "debug": "set DEBUG=pharmacieplus:* && node ./bin/www",

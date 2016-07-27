@@ -11,8 +11,6 @@ const express      = require('express'),
       sysInfo      = require('./utils/sys-info'),
       env          = process.env;
 
-// route users
-const users = require('./routes/users');
 
 const app = express();
 

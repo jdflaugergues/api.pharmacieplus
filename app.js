@@ -1,18 +1,17 @@
 const express      = require('express'),
-    http         = require('http'),
-    fs           = require('fs'),
-    path         = require('path'),
-    favicon      = require('serve-favicon'),
-    logger       = require('morgan'),
-    cookieParser = require('cookie-parser'),
-    bodyParser   = require('body-parser'),
-    debug        = require('debug')('pharmacieplus:app'),
-    contentTypes = require('./utils/content-types'),
-    sysInfo      = require('./utils/sys-info'),
-    env          = process.env;
+      http         = require('http'),
+      fs           = require('fs'),
+      path         = require('path'),
+      favicon      = require('serve-favicon'),
+      logger       = require('morgan'),
+      cookieParser = require('cookie-parser'),
+      bodyParser   = require('body-parser'),
+      debug        = require('debug')('pharmacieplus:app'),
+      contentTypes = require('./utils/content-types'),
+      sysInfo      = require('./utils/sys-info'),
+      env          = process.env;
 
 
-// users routes
 const users = require('./routes/users');
 
 const app = express();

@@ -12,7 +12,6 @@ const express      = require('express'),
       env          = process.env;
 
 
-const routes = require('./routes/index');
 const users = require('./routes/users');
 
 const app = express();

@@ -6,13 +6,13 @@ const express      = require('express'),
     logger       = require('morgan'),
     cookieParser = require('cookie-parser'),
     bodyParser   = require('body-parser'),
-    debug        = require('debug')('pharmacieplus:app');
+    debug        = require('debug')('pharmacieplus:app'),
     contentTypes = require('./utils/content-types'),
     sysInfo      = require('./utils/sys-info'),
     env          = process.env;
 
 
-const routes = require('./routes/index');
+// users routes
 const users = require('./routes/users');
 
 const app = express();
@@ -73,8 +73,8 @@ app.get('/home', function(req, res) {
 // catch 404 and forward to error handler
 app.use((request, response, next) => {
   var err = new Error('Not Found');
-  err.status = 404;
-  next(err);
+err.status = 404;
+next(err);
 });
 
 // error handlers
@@ -84,21 +84,21 @@ app.use((request, response, next) => {
 if (app.get('env') === 'development') {
   app.use((err, request, response, next) => {
     response.status(err.status || 500);
-    response.render('error', {
-      message: err.message,
-      error: err
-    });
+  response.render('error', {
+    message: err.message,
+    error: err
   });
+});
 }
 
 // production error handler
 // no stacktraces leaked to user
 app.use((err, request, response, next) => {
   response.status(err.status || 500);
-  response.render('error', {
-    message: err.message,
-    error: {}
-  });
+response.render('error', {
+  message: err.message,
+  error: {}
+});
 });
 
 app.listen(env.NODE_PORT || 3000, env.NODE_IP || 'localhost', function () {
@@ -107,10 +107,10 @@ app.listen(env.NODE_PORT || 3000, env.NODE_IP || 'localhost', function () {
 
 const ImportData = require('./app/importdata');
 /*
-var mongoose = require('mongoose');
-var id = mongoose.Types.ObjectId('5471aad59c93d7dd010ce3c1');
-debug(id);
-*/
+ var mongoose = require('mongoose');
+ var id = mongoose.Types.ObjectId('5471aad59c93d7dd010ce3c1');
+ debug(id);
+ */
 ImportData.process();
 
 

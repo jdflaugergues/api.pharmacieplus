@@ -6,8 +6,8 @@
 const express = require('express'),
       _ = require('lodash'),
       router = express.Router(),
-      AbstractDAOFactory = require('../../app/dao/abstractdaofactory');
-      Tools = require('./tools');
+      AbstractDAOFactory = require('../../app/dao/abstractdaofactory'),
+      Tools = require('./tools'),
       debug = require('debug')('pharmacieplus:pharmacies:API:REST');
 
 const adf = AbstractDAOFactory.getFactory(AbstractDAOFactory.DAO_FACTORY);

@@ -10,7 +10,7 @@ describe('REST API Pharmacie', function() {
 
         it('should get unknow pharmacie', function (done) {
             $.ajax({
-                    url: 'http://localhost:3000/v1/pharmacies/999999',
+                    url: document.location.origin + '/v1/pharmacies/999999',
                     type: 'get'
                 })
                 .always(function (jqXHR, textStatus, errorThrown) {
@@ -25,7 +25,7 @@ describe('REST API Pharmacie', function() {
 
         it('should get know pharmacie', function (done) {
             $.ajax({
-                    url: 'http://localhost:3000/v1/pharmacies/1',
+                    url: document.location.origin + '/v1/pharmacies/1',
                     type: 'get'
                 })
                 .always(function (data, textStatus, jqXHR) {
@@ -39,7 +39,7 @@ describe('REST API Pharmacie', function() {
     describe('Accept-Range Header', function() {
         it('should return correct Accept-Range', function (done) {
             $.ajax({
-                    url: 'http://localhost:3000/v1/pharmacies',
+                    url: document.location.origin + '/v1/pharmacies',
                     type: 'get'
                 })
                 .always(function (data, textStatus, jqXHR) {
@@ -51,7 +51,7 @@ describe('REST API Pharmacie', function() {
 
         it('should return correct Accept-Range', function (done) {
             $.ajax({
-                    url: 'http://localhost:3000/v1/pharmacies',
+                    url: document.location.origin + '/v1/pharmacies',
                     type: 'get'
                 })
                 .always(function (data, textStatus, jqXHR) {
@@ -69,7 +69,7 @@ describe('REST API Pharmacie', function() {
 
         it('should range_bad_syntax error', function (done) {
             $.ajax({
-                    url: 'http://localhost:3000/v1/pharmacies?range=blabla',
+                    url: document.location.origin + '/v1/pharmacies?range=blabla',
                     type: 'get'
                 })
                 .always(function (jqXHR, textStatus, errorThrown) {
@@ -82,7 +82,7 @@ describe('REST API Pharmacie', function() {
 
         it('should bad_byte_range_resp_spec error', function (done) {
             $.ajax({
-                    url: 'http://localhost:3000/v1/pharmacies?range=10-5',
+                    url: document.location.origin + '/v1/pharmacies?range=10-5',
                     type: 'get'
                 })
                 .always(function (jqXHR, textStatus, errorThrown) {
@@ -95,7 +95,7 @@ describe('REST API Pharmacie', function() {
 
         it('should range_bad_count error', function (done) {
             $.ajax({
-                    url: 'http://localhost:3000/v1/pharmacies?range=0-25',
+                    url: document.location.origin + '/v1/pharmacies?range=0-25',
                     type: 'get'
                 })
                 .always(function (jqXHR, textStatus, errorThrown) {
@@ -108,7 +108,7 @@ describe('REST API Pharmacie', function() {
 
         it('should return count pharmacie error', function (done) {
             $.ajax({
-                    url: 'http://localhost:3000/v1/pharmacies?range=1-3',
+                    url: document.location.origin + '/v1/pharmacies?range=1-3',
                     type: 'get'
                 })
                 .always(function (data, textStatus, jqXHR) {
@@ -120,7 +120,7 @@ describe('REST API Pharmacie', function() {
 
         it('should return correct Content-Range', function (done) {
             $.ajax({
-                    url: 'http://localhost:3000/v1/pharmacies?range=1-3',
+                    url: document.location.origin + '/v1/pharmacies?range=1-3',
                     type: 'get'
                 })
                 .always(function (data, textStatus, jqXHR) {
@@ -135,7 +135,7 @@ describe('REST API Pharmacie', function() {
 
         it('should return Status Code', function (done) {
             $.ajax({
-                    url: 'http://localhost:3000/v1/pharmacies?range=1-3',
+                    url: document.location.origin + '/v1/pharmacies?range=1-3',
                     type: 'get'
                 })
                 .always(function (data, textStatus, jqXHR) {
@@ -157,7 +157,7 @@ describe('REST API Pharmacie', function() {
 
         it('should return 4 links in Link header', function (done) {
             $.ajax({
-                    url: 'http://localhost:3000/v1/pharmacies?fields=rs&range=5-7',
+                    url: document.location.origin + '/v1/pharmacies?fields=rs&range=5-7',
                     type: 'get'
                 })
                 .always(function (data, textStatus, jqXHR) {
@@ -173,7 +173,7 @@ describe('REST API Pharmacie', function() {
 
         it('should return good first Link', function (done) {
             $.ajax({
-                    url: 'http://localhost:3000/v1/pharmacies?fields=rs&range=5-7',
+                    url: document.location.origin + '/v1/pharmacies?fields=rs&range=5-7',
                     type: 'get'
                 })
                 .always(function (data, textStatus, jqXHR) {
@@ -193,7 +193,7 @@ describe('REST API Pharmacie', function() {
 
         it('should return good prev Link', function (done) {
             $.ajax({
-                    url: 'http://localhost:3000/v1/pharmacies?fields=rs&range=5-7',
+                    url: document.location.origin + '/v1/pharmacies?fields=rs&range=5-7',
                     type: 'get'
                 })
                 .always(function (data, textStatus, jqXHR) {
@@ -209,7 +209,7 @@ describe('REST API Pharmacie', function() {
 
         it('should return good next Link', function (done) {
             $.ajax({
-                    url: 'http://localhost:3000/v1/pharmacies?fields=rs&range=5-7',
+                    url: document.location.origin + '/v1/pharmacies?fields=rs&range=5-7',
                     type: 'get'
                 })
                 .always(function (data, textStatus, jqXHR) {
@@ -229,7 +229,7 @@ describe('REST API Pharmacie', function() {
 
         it('should return good last Link', function (done) {
             $.ajax({
-                    url: 'http://localhost:3000/v1/pharmacies?fields=rs&range=5-7',
+                    url: document.location.origin + '/v1/pharmacies?fields=rs&range=5-7',
                     type: 'get'
                 })
                 .always(function (data, textStatus, jqXHR) {
@@ -249,7 +249,7 @@ describe('REST API Pharmacie', function() {
 
         it('should range_bad_syntax error', function (done) {
             $.ajax({
-                    url: 'http://localhost:3000/v1/pharmacies?fields=rs',
+                    url: document.location.origin + '/v1/pharmacies?fields=rs',
                     type: 'get'
                 })
                 .always(function (data, textStatus, jqXHR) {

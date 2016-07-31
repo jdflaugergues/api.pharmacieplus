@@ -82,10 +82,10 @@ Les test sont réalisés à partir des modules npm suivants :
 
 ### côté serveur
 
-Les tests côté serveur se trouvent dans le répertoire **test**
+Les tests côté serveur se trouvent dans le répertoire **./test**
 Leurs exécution se fait via la commande suivante : `npm test`
 
 ### côté client
 
-Les tests côté client se trouvent dans le fichier ***./public/javascripts/test.js*
-Leurs exécution se fait via la route testrunner (ex: http://api-pharmacieplus.rhcloud.com/testrunner)
+Les tests côté client se trouvent dans le fichier **./public/javascripts/test.js**
+Leurs exécution se fait via la route *testrunner* (ex: http://api-pharmacieplus.rhcloud.com/testrunner)

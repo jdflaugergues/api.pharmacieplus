@@ -102,13 +102,14 @@ app.listen(env.NODE_PORT || 3000, env.NODE_IP || 'localhost', function () {
   console.log(`Application worker ${process.pid} started...`);
 });
 
-const ImportData = require('./app/importdata');
+//const ImportData = require('./app/importdata');
+//ImportData.process();
 /*
  var mongoose = require('mongoose');
  var id = mongoose.Types.ObjectId('5471aad59c93d7dd010ce3c1');
  debug(id);
  */
-ImportData.process();
+
 
 
 //module.exports = app;

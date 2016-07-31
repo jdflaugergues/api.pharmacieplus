@@ -7,7 +7,7 @@
 
 // Importation du driver de connexion à la base de données mongoDB
 const mongoose = require('mongoose'),
-      config = require('../../config/config.json'),
+      config = require('../../../data/config.json'),
       debug = require('debug')('pharmacieplus:PPConnection');
 
 // Adresse de connexion à la base composée de l'hébergeur et du nom de la base de données.

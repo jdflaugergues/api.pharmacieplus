@@ -22,7 +22,7 @@ geolocalisation;010002335;881398.6;6543082.9;1;ATLASANTE;100;IGN;BD_ADRESSE;V2.1
 geolocalisation;010002350;881535.0;6542158.6;1;ATLASANTE;100;IGN;BD_ADRESSE;V2.1;LAMBERT_93;2016-02-29
 `;
 
-//csvFile = 'etalab_cs1100507_stock_20160620-0432.csv';
+csvFile = './data/etalab_cs1100507_stock_20160620-0432.csv';
 
 
 class ImportData {
@@ -78,7 +78,7 @@ class ImportData {
             let pharStruct = _.filter(results.structureet, (phar) => (phar[18] == 620));
 
             pharStruct.forEach((pharmacie, index) => {
-
+                console.log(pharmacie[1]);
                 listPharmacies.push({
                     _id: pharmacie[1],
                     rs: pharmacie[3],
@@ -99,23 +99,26 @@ class ImportData {
 
     static updateDb(listPharmacies){
 
-        let adf = AbstractDAOFactory.getFactory(AbstractDAOFactory.DAO_FACTORY);
-        let pharmacieDao = adf.getPharmacieDAO();
+        let adf = AbstractDAOFactory.getFactory(AbstractDAOFactory.DAO_FACTORY),
+            pharmacieDao = adf.getPharmacieDAO(),
+            count = 0;
 
         listPharmacies.forEach((pharmacieData) => {
             // On crée la pharmacie si elle n'existe pas, sinon on la met à jour (upsert: true)
             pharmacieDao.update(pharmacieData, {upsert: true} ,(err, numAffected) => {
                 if (err) {
                     debug(`Failed to create new pharmacies : ${err.message}`);
+                } else {
+                    count++;
                 }
             });
         });
 
-        debug(`Inserted ${listPharmacies.length} pharmacies into the pharmacie collection`);
+        debug(`Inserted ${count} pharmacies into the pharmacie collection`);
     }
 
     static process(){
-        ImportData.parseData(csvFile);
+        //ImportData.parseData(csvFile);
         //ImportData.readFile(csvFile);
     }
 }

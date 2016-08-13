@@ -98,18 +98,17 @@ response.render('error', {
 });
 });
 
-app.listen(env.NODE_PORT || 3000, env.NODE_IP || 'localhost', function () {
-  console.log(`Application worker ${process.pid} started...`);
+
+//app.listen(env.NODE_PORT || 3000, env.NODE_IP || 'localhost', () => {
+app.listen(process.env.OPENSHIFT_NODEJS_PORT || '8080', process.env.OPENSHIFT_NODEJS_IP || '127.0.0.1', () => {
+  debug(`Application worker ${process.pid} started...`);
 });
 
-//const ImportData = require('./app/importdata');
-//ImportData.process();
-/*
- var mongoose = require('mongoose');
- var id = mongoose.Types.ObjectId('5471aad59c93d7dd010ce3c1');
- debug(id);
- */
+//const TestGeo = require('./app/test-geo');
+//TestGeo.process();
 
+//const ImportData = require('./app/importdata/importdata');
+//ImportData.process();
 
 
 //module.exports = app;

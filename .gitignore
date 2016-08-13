@@ -37,3 +37,4 @@ private.md
 .idea/
 config/config.json
 data/
+app/test-geo.js

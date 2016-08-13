@@ -2,8 +2,9 @@
  * Classe utilitaire pour les API REST.
  */
 
-const debug = require('debug')('pharmacieplus:tools:API:REST'),
-      _ = require('lodash');
+const debug = require('debug')('pharmacieplus:tools:API:REST:tools'),
+      _ = require('lodash'),
+      LatLon = require('../movable-type/LatLon.js');
 
 'use strict';
 
@@ -61,8 +62,8 @@ class Tools {
         let limit = offset + currentRange - 1; // indice du dernier élément de la collection à retourner.
 
         // On définit les range pour les 4 liens (first, prev, next & last)
-        let first = `0-${((currentRange-1) < instanceLength) && (currentRange - 1) || instanceLength}`,
-            prev = `${((offset - currentRange) >= 0) && (offset - currentRange) || 0}-${((offset - currentRange) >= 0) && (offset - 1) || (currentRange < instanceLength) && (currentRange - 1) || instanceLength}`,
+        let first = `0-${((currentRange-1) < instanceLength) && ('' + (currentRange - 1)) || instanceLength}`,
+            prev = `${((offset - currentRange) >= 0) && (offset - currentRange) || 0}-${((offset - currentRange) >= 0) && (offset - 1) || (currentRange < instanceLength) && ('' + (currentRange - 1)) || instanceLength}`,
             next = `${((limit + 1) <= instanceLength ) && (limit + 1) || instanceLength }-${((limit + currentRange) < instanceLength) && (limit + currentRange) || instanceLength }`,
             last = `${((instanceLength - currentRange) >= 0) && (instanceLength - currentRange) || 0}-${instanceLength - 1}`;
 
@@ -74,10 +75,150 @@ class Tools {
             ].join(',');
     }
 
+    // Fonction permettant de créer le paramètre de recherche en fonction de la position géographique
+    // dans la base MongoDB.
+    // @param {object} request Requête contenant les paramètres long et lat pour longitude et latitude.
+    //                         Ces paramètres sont obligatoires pour la prise en compte du recherche géolocalisée.
+    // @return Le paramètre de recherche géolocalisée si paramètres ok; objet error sinon.
+    static createLocationQuery(request){
+
+        let error = {},
+            query = {};
+
+        let long = request.query.long,
+            lat = request.query.lat;
+
+        if (! long) {
+            error = {
+                error: 'missing_location_arg_long',
+                error_description: `The longitude argument 'long' is missing in your request.`
+            };
+        } else if (! lat) {
+            error = {
+                error: 'missing_location_arg_lat',
+                error_description: `The latitude argument 'lat' is missing in your request.`
+            };
+        } else {
+
+            long = parseFloat(long);
+            lat = parseFloat(lat);
+
+            if (isNaN(long)) {
+                error = {
+                    error: 'bad_location_arg_long',
+                    error_description: `The longitude argument 'long' must be a valid number in your request.`
+                };
+            } else if (isNaN(lat)) {
+                error = {
+                    error: 'bad_location_arg_lat',
+                    error_description: `The latitude argument 'lat' must be a valid number in your request.`
+                };
+            } else {
+                query = {loc: {'$near': [long, lat], '$maxDistance': 5000}};
+            }
+        }
+        if( ! _.isEmpty(error)){
+            return error;
+        } else {
+            return query;
+        }
+    }
+
+    // Cette méthode étend les pharmacies de la collection avec la distance entre chaque pharmacie et la position
+    // de l'utilisateur. La méthode de calcul de distance est issue du site : http://www.movable-type.co.uk/scripts/latlong.html
+    // @param {object} request Requête contenant la position de l'utilisateur
+    // @param {object} docs La liste des pharmacies à étendre.
+    // @return La liste des pharmacies avec la distance.
+    static getDistanceFromLocations(request, pharmacies){
+
+        let origin = new LatLon(parseFloat(request.query.lat), parseFloat(request.query.long));
+
+        // On étend chaque pharmacie de la collection avec la propriété distance qui correspond à la distance en mètre
+        // entre la pharmacie et la position de la requête (position de l'utilisateur)
+        _.map(pharmacies, (pharmacie) => {
+            pharmacie.distance = parseInt(origin.distanceTo(new LatLon(pharmacie.loc[1], pharmacie.loc[0])));
+        });
+
+        // On tri la collection des pharmacies de la plus proche à la plus éloignée.
+        pharmacies = _.orderBy(pharmacies, ['distance'], ['asc']);
+
+        return pharmacies;
+    }
+
+    // Fonction permettant de créer le paramètre de recherche dans la base de données MongoDB en fonction des paramètres
+    // présents dans l'URL. Pour chaque paramètres de l'URL correspondant à un champ en base de données est associé la valeur
+    // de recherche. Cette valeur de recherche peut être couplé au "joker (*)" au début et/ou à la fin de la valeur pour
+    // un recherche sur tout caractères.
+    // @param {object} request La requête contenant les paramètres de recherches
+    // @return Le paramètre de recherche en base de données construit à partir des paramètres présents dans la requête.
+    static createSearchQuery(request) {
+
+        let error = {},
+            queries = {};
+
+        // On récupère les critères de recherche dans la requête en excluant les paramètres ne correspondant pas à la recherche (ex: sort, desc, range, ...)
+        let searchParameters = _.pick(request.query, ['rs', 'numvoie', 'typvoie', 'voie', 'cpville', 'telephone', 'fax', 'coordxet', 'coordyet']);
+
+        // Parcours des champs de recherche
+        _.forEach(searchParameters, (value, param) => {
+
+            // Erreur si la valeur du paramètre de recherche n'est pas bonne
+            if (!/^\*?[\wàèìòùÀÈÌÒÙáéíóúýÁÉÍÓÚÝâêîôûÂÊÎÔÛãñõÃÑÕäëïöüÿÄËÏÖÜŸçÇßØøÅåÆæœ-\s]*\*?$/.test(value)) {
+                error = {
+                    error: 'search_bad_syntax',
+                    error_description: `Bad syntax of search parameter '${param}'`
+                };
+            } else {
+                value = (value[0] === '*') && value.substr(1,value.length) || '^' + value;
+                value = (value[value.length - 1] === '*') && value.substr(0, value.length - 1) || value + '$';
+                queries[param] = new RegExp(value, 'i');
+            }
+        });
+
+        if( ! _.isEmpty(error)){
+            return error;
+        } else {
+            return queries;
+        }
+    }
+
+    // Fonction rajoutant dans les options les paramètres de tri du résultat.
+    // @param request Requête contenant les paramètres
+    // @param options Les options courantes de la requêtes.
+    // @return Les options de la requêtes surchargé avec les paramètres de tri.
+    static createSortOptions(request, options) {
+        let sort = request.query.sort;
+
+        // Si le tri est demandé dans la requête.
+        if (sort) {
+
+            // Récupération des paramètres de tri descendant
+            let desc = request.query.desc,
+                descOptions = {},
+                listDesc = [];
+
+            desc && (listDesc = desc.split(/,/));
+
+            // Récupération des paramètres de tri sur les champs
+            let listSort = sort.split(/,/),
+                sortOptions = {};
+
+            // Parcours des noms d'attributs de tri pour les ajouter aux options.
+            _.each(listSort, (item) => {
+                sortOptions[item] = (listDesc.indexOf(item) === -1) && 1 || -1;
+            });
+
+            // On ajoute aux options courantes, les options de tri
+            options = _.extend(options, {sort: sortOptions})
+        }
+
+        return options;
+    }
+
     // Fonction permettant à partir du range passer en paramètre de la requête HTTP, de créer l'objet
     // options correspondant pour la requête MongoDB.
     // Si le paramètre range est incorrect, on ne retourne pas les options mais un objet error.
-    // @param request Requête contenant les paramètre
+    // @param request Requête contenant les paramètres
     // @param defaultRange Count maximal autorisé pour la pagination
     // @return Si le range le JSON correspondant au param options de la requête find mongoDB; sinon un objet error.
     static createRangeOptions(request, defaultRange) {

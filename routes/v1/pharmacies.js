@@ -31,8 +31,118 @@ router.use(function timeLog(req, res, next) {
 });
 
 
+/**
+ * Géolocation : Around me
+ * Envoi dans les paramètres
+ *  : coordX, coordY
+ *
+ * A partir de ces coordonnées, recherche
+ */
+
 
 // Définition des routes
+
+
+router.route('/locations/')
+
+    // Recherche d'une collection de pharmacies
+    .get((request, response, next) => {
+
+    // Création des options à partir du range de la requête.
+    let options = Tools.createRangeOptions(request, RANGE_DEFAULT);
+
+    // Ajout dans les options, les paramètres de tri.
+    options = Tools.createSortOptions(request, options);
+
+    // Erreur si la paramètre range est incorrect.
+    if (options.error) {
+        handleError(response, options.error, options.error_description, 400);
+    } else {
+
+        let query = Tools.createLocationQuery(request);
+
+        if (query.error) {
+            handleError(response, query.error, options.error_description, 400);
+            return;
+        }
+
+        // Préparation du paramètre fields de la requête pour une réponse partielle.
+        let fields = Tools.createFieldsArg(request);
+
+        pharmacieDao.find(query, fields, options, (err, result) => {
+            if (err) {
+                handleError(response, 'find_pharmacie_failed', err.message);
+            } else {
+                let docs = result.docs,
+                count = result.count,
+                statusCode = (docs.length === count) ? 200 : 206;
+
+                response.setHeader('Content-Range', `${options.skip}-${options.skip + docs.length - 1}/${count}`);
+                response.setHeader('Accept-Range', `pharmacie ${RANGE_DEFAULT}`);
+
+                // On n'ajoute l'entête "Link" seulement sur les requêtes demandant une pagination.
+                if (request.query.range) {
+                    let linkHttpHeader = Tools.createLinkHTTPHeader(request, options.skip, options.limit, parseInt(count, 10));
+                    response.setHeader('Link', linkHttpHeader);
+                }
+
+                // Ajoute aux pharmacies leur distance par rapport à la position de la requête.
+                let pharmacies = Tools.getDistanceFromLocations(request, docs);
+
+                response.status(statusCode).json(pharmacies);
+            }
+        });
+    }
+});
+
+// Route '/v1/pharmacies/search'
+router.route('/search/')
+
+// Recherche sur les ressources des pharmacies.
+.get((request, response, next) => {
+    // Création des options à partir du range de la requête.
+    let options = Tools.createRangeOptions(request, RANGE_DEFAULT);
+
+    // Ajout dans les options, les paramètres de tri.
+    options = Tools.createSortOptions(request, options);
+
+    // Erreur si la paramètre range est incorrect.
+    if (options.error) {
+        handleError(response, options.error, options.error_description, 400);
+    } else {
+
+        let query = Tools.createSearchQuery(request);
+
+        if (query.error) {
+            handleError(response, query.error, options.error_description, 400);
+            return;
+        }
+
+        // Préparation du paramètre fields de la requête pour une réponse partielle.
+        let fields = Tools.createFieldsArg(request);
+
+        pharmacieDao.find(query, fields, options, (err, result) => {
+            if (err) {
+                handleError(response, 'find_pharmacie_failed', err.message);
+            } else {
+                let docs = result.docs,
+                count = result.count,
+                statusCode = (docs.length === count) ? 200 : 206;
+
+                response.setHeader('Content-Range', `${options.skip}-${options.skip + docs.length - 1}/${count}`);
+                response.setHeader('Accept-Range', `pharmacie ${RANGE_DEFAULT}`);
+
+                // On n'ajoute l'entête "Link" seulement sur les requêtes demandant une pagination.
+                if (request.query.range) {
+                    let linkHttpHeader = Tools.createLinkHTTPHeader(request, options.skip, options.limit, parseInt(count, 10));
+                    response.setHeader('Link', linkHttpHeader);
+                }
+
+                response.status(statusCode).json(docs);
+            }
+        });
+    }
+});
 
 // Route '/v1/pharmacies'
 router.route('/')
@@ -42,6 +152,9 @@ router.route('/')
 
     // Création des options à partir du range de la requête.
     let options = Tools.createRangeOptions(request, RANGE_DEFAULT);
+
+    // Ajout dans les options, les paramètres de tri.
+    options = Tools.createSortOptions(request, options);
 
     // Erreur si la paramètre range est incorrect.
     if (options.error) {
@@ -56,8 +169,8 @@ router.route('/')
                 handleError(response, 'find_pharmacie_failed', err.message);
             } else {
                 let docs = result.docs,
-                    count = result.count;
-                    statusCode = (docs.length === count) ? 200 : 206 ;
+                    count = result.count,
+                    statusCode = (docs.length === count) ? 200 : 206;
 
                 response.setHeader('Content-Range', `${options.skip}-${options.skip + docs.length - 1}/${count}`);
                 response.setHeader('Accept-Range', `pharmacie ${RANGE_DEFAULT}`);

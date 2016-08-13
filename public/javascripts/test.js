@@ -1,14 +1,14 @@
 chai.should();
 
-describe('REST API Pharmacie', function() {
+describe('API REST Pharmacie', function() {
 
     var acceptRange,    // max
         contentRange;   // step
 
 
-    describe('GET by ID', function() {
+    describe('Récupération de pharmacie à partir de son id.', function() {
 
-        it('should get unknow pharmacie', function (done) {
+        it('Doit retourner une erreur 404 pour une ressource inconnue', function (done) {
             $.ajax({
                     url: document.location.origin + '/v1/pharmacies/999999',
                     type: 'get'
@@ -23,9 +23,9 @@ describe('REST API Pharmacie', function() {
                 });
         });
 
-        it('should get know pharmacie', function (done) {
+        it('Doit retourner la pharmacie demandée.', function (done) {
             $.ajax({
-                    url: document.location.origin + '/v1/pharmacies/1',
+                    url: document.location.origin + '/v1/pharmacies/040002370',
                     type: 'get'
                 })
                 .always(function (data, textStatus, jqXHR) {
@@ -36,8 +36,8 @@ describe('REST API Pharmacie', function() {
         });
     });
 
-    describe('Accept-Range Header', function() {
-        it('should return correct Accept-Range', function (done) {
+    describe('Nombre maximum de pharmacies pouvant être requêtées en une seule fois', function() {
+        it('Doit retourner dans l\'entête de réponse un "Accept-Range" correcT.', function (done) {
             $.ajax({
                     url: document.location.origin + '/v1/pharmacies',
                     type: 'get'
@@ -49,7 +49,7 @@ describe('REST API Pharmacie', function() {
                 });
         });
 
-        it('should return correct Accept-Range', function (done) {
+        it('Doit retourner dans l\entête de réponse un "Accept-Range" correct.', function (done) {
             $.ajax({
                     url: document.location.origin + '/v1/pharmacies',
                     type: 'get'
@@ -65,9 +65,9 @@ describe('REST API Pharmacie', function() {
         });
     });
 
-    describe('Range parameter', function() {
+    describe('Pagination des pharmacies', function() {
 
-        it('should range_bad_syntax error', function (done) {
+        it('Doit retourner une erreur "range_bad_syntax"', function (done) {
             $.ajax({
                     url: document.location.origin + '/v1/pharmacies?range=blabla',
                     type: 'get'
@@ -80,7 +80,7 @@ describe('REST API Pharmacie', function() {
                 });
         });
 
-        it('should bad_byte_range_resp_spec error', function (done) {
+        it('Doit retourner une erreur "bad_byte_range_resp_spec"', function (done) {
             $.ajax({
                     url: document.location.origin + '/v1/pharmacies?range=10-5',
                     type: 'get'
@@ -93,7 +93,7 @@ describe('REST API Pharmacie', function() {
                 });
         });
 
-        it('should range_bad_count error', function (done) {
+        it('Doit retourner une erreur "range_bad_count"', function (done) {
             $.ajax({
                     url: document.location.origin + '/v1/pharmacies?range=0-25',
                     type: 'get'
@@ -106,7 +106,7 @@ describe('REST API Pharmacie', function() {
                 });
         });
 
-        it('should return count pharmacie error', function (done) {
+        it('Doit retourner le bon nombre de pharmacie', function (done) {
             $.ajax({
                     url: document.location.origin + '/v1/pharmacies?range=1-3',
                     type: 'get'
@@ -118,7 +118,7 @@ describe('REST API Pharmacie', function() {
                 });
         });
 
-        it('should return correct Content-Range', function (done) {
+        it('Doit retourner dans le header un "Content-Range" correct.', function (done) {
             $.ajax({
                     url: document.location.origin + '/v1/pharmacies?range=1-3',
                     type: 'get'
@@ -133,7 +133,7 @@ describe('REST API Pharmacie', function() {
                 });
         });
 
-        it('should return Status Code', function (done) {
+        it('Doit retourner un status code correct', function (done) {
             $.ajax({
                     url: document.location.origin + '/v1/pharmacies?range=1-3',
                     type: 'get'
@@ -153,9 +153,9 @@ describe('REST API Pharmacie', function() {
         });
     });
 
-    describe('Link Header Response', function() {
+    describe('Liens de navigation', function() {
 
-        it('should return 4 links in Link header', function (done) {
+        it('Doit retourner les 4 liens dans le entête de réponse "Link"', function (done) {
             $.ajax({
                     url: document.location.origin + '/v1/pharmacies?fields=rs&range=5-7',
                     type: 'get'
@@ -171,7 +171,7 @@ describe('REST API Pharmacie', function() {
                 });
         });
 
-        it('should return good first Link', function (done) {
+        it('Doit retourner un lien "first" correct', function (done) {
             $.ajax({
                     url: document.location.origin + '/v1/pharmacies?fields=rs&range=5-7',
                     type: 'get'
@@ -191,7 +191,7 @@ describe('REST API Pharmacie', function() {
                 });
         });
 
-        it('should return good prev Link', function (done) {
+        it('Doit retourner un lien "prev" correct', function (done) {
             $.ajax({
                     url: document.location.origin + '/v1/pharmacies?fields=rs&range=5-7',
                     type: 'get'
@@ -207,7 +207,7 @@ describe('REST API Pharmacie', function() {
                 });
         });
 
-        it('should return good next Link', function (done) {
+        it('Doit retourner un lien "next" correct', function (done) {
             $.ajax({
                     url: document.location.origin + '/v1/pharmacies?fields=rs&range=5-7',
                     type: 'get'
@@ -227,7 +227,7 @@ describe('REST API Pharmacie', function() {
                 });
         });
 
-        it('should return good last Link', function (done) {
+        it('Doit retourner un lien "last" correct', function (done) {
             $.ajax({
                     url: document.location.origin + '/v1/pharmacies?fields=rs&range=5-7',
                     type: 'get'
@@ -245,28 +245,172 @@ describe('REST API Pharmacie', function() {
 
     });
 
-    describe('fields parameter', function() {
+    describe('Filtrage des pharmacies sur les attributs.', function() {
 
-        it('should range_bad_syntax error', function (done) {
+        it('Doit retourner seulement les ressources requêtées', function (done) {
             $.ajax({
                     url: document.location.origin + '/v1/pharmacies?fields=rs',
                     type: 'get'
                 })
                 .always(function (data, textStatus, jqXHR) {
-                    //jqXHR.should.exist, jqXHR.status.should.exist, jqXHR.responseJSON.should.exist;
-                    //jqXHR.status.should.deep.equal(400);
-                    //jqXHR.responseJSON.error.should.deep.equal('range_bad_syntax');
+                    jqXHR.should.exist, jqXHR.status.should.exist, jqXHR.responseJSON.should.exist;
+                    chai.expect(data[0].rs).to.exist;
+                    chai.expect(data[0].telephone).to.not.exist;
                     done();
                 });
         });
     });
 
-    describe('Filtering request HTTP', function() {
+    describe('Tri du résultat', function() {
+        it('Doit retourner les résultats par ordre croissant sur la raison sociale', function (done) {
+            $.ajax({
+                    url: document.location.origin + '/v1/pharmacies?fields=rs&sort=rs',
+                    type: 'get'
+                })
+                .always(function (data, textStatus, jqXHR) {
+                    jqXHR.should.exist, jqXHR.status.should.exist, jqXHR.responseJSON.should.exist;
+                    chai.expect(data[0].rs <= data[1].rs).to.be.true;
+                    done();
+                });
+        });
 
+        it('Doit retourner les résultats par ordre décroissant sur la raison sociale', function (done) {
+            $.ajax({
+                    url: document.location.origin + '/v1/pharmacies?fields=rs&sort=rs&desc=rs',
+                    type: 'get'
+                })
+                .always(function (data, textStatus, jqXHR) {
+                    jqXHR.should.exist, jqXHR.status.should.exist, jqXHR.responseJSON.should.exist;
+                    chai.expect(data[0].rs >= data[1].rs).to.be.true;
+                    done();
+                });
+        });
     });
 
-    describe('Sorting request HTTP', function() {
+    describe('Recherche des ressources', function() {
+        it('Doit retourner une erreur de syntaxe', function(done) {
+            $.ajax({
+                    url: document.location.origin + '/v1/pharmacies/search?rs=**test**',
+                    type: 'get'
+                })
+                .always(function (jqXHR, textStatus, errorThrown) {
+                    jqXHR.should.exist;
+                    jqXHR.status.should.exist;
+                    jqXHR.responseJSON.should.exist;
+                    jqXHR.status.should.deep.equal(400);
+                    jqXHR.responseJSON.error.should.deep.equal('search_bad_syntax');
+                    done();
+                });
+        });
 
+        it('Doit retourner que des codes postaux 38100', function(done) {
+            $.ajax({
+                    url: document.location.origin + '/v1/pharmacies/search?cpville=38100*',
+                    type: 'get'
+                })
+                .always(function (data, textStatus, jqXHR) {
+
+                    var ok = true;
+
+                    data.forEach(function(pharmacie) {
+                        ok = ok && /^38100/.test(pharmacie.cpville);
+                    })
+
+                    chai.expect(ok).to.be.true;
+                    done();
+                });
+        })
+
+        it('Doit retourner que des codes postaux terminant par 8100', function(done) {
+            $.ajax({
+                    url: document.location.origin + '/v1/pharmacies/search?cpville=*8100*',
+                    type: 'get'
+                })
+                .always(function (data, textStatus, jqXHR) {
+
+                    var ok = true;
+
+                    data.forEach(function(pharmacie) {
+                        ok = ok && /8100/.test(pharmacie.cpville);
+                    })
+
+                    chai.expect(ok).to.be.true;
+                    done();
+                });
+        })
+    });
+
+    describe('Recherche des ressources', function() {
+        it('Doit retourner une erreur si pas de coordonnées GPS', function(done) {
+            $.ajax({
+                url: document.location.origin + '/v1/pharmacies/locations',
+                type: 'get'
+            })
+                .always(function (jqXHR, textStatus, errorThrown) {
+                    jqXHR.should.exist;
+                    jqXHR.status.should.exist;
+                    jqXHR.responseJSON.should.exist;
+                    jqXHR.status.should.deep.equal(400);
+                    jqXHR.responseJSON.error.should.deep.equal('missing_location_arg_long');
+                    done();
+                });
+        });
+
+        it('Doit retourner une erreur si pas de coordonnées GPS (latitude)', function(done) {
+            $.ajax({
+                    url: document.location.origin + '/v1/pharmacies/locations?long=45',
+                    type: 'get'
+                })
+                .always(function (jqXHR, textStatus, errorThrown) {
+                    jqXHR.should.exist;
+                    jqXHR.status.should.exist;
+                    jqXHR.responseJSON.should.exist;
+                    jqXHR.status.should.deep.equal(400);
+                    jqXHR.responseJSON.error.should.deep.equal('missing_location_arg_lat');
+                    done();
+                });
+        });
+
+        it('Doit retourner une erreur si pas coordonnées GPS mauvaise (longitude)', function(done) {
+            $.ajax({
+                    url: document.location.origin + '/v1/pharmacies/locations?long=aaaa&lat=5',
+                    type: 'get'
+                })
+                .always(function (jqXHR, textStatus, errorThrown) {
+                    jqXHR.should.exist;
+                    jqXHR.status.should.exist;
+                    jqXHR.responseJSON.should.exist;
+                    jqXHR.status.should.deep.equal(400);
+                    jqXHR.responseJSON.error.should.deep.equal('bad_location_arg_long');
+                    done();
+                });
+        });
+
+        it('Doit retourner une erreur si pas coordonnées GPS mauvaise (latitude)', function(done) {
+            $.ajax({
+                    url: document.location.origin + '/v1/pharmacies/locations?long=45&lat=aaaa',
+                    type: 'get'
+                })
+                .always(function (jqXHR, textStatus, errorThrown) {
+                    jqXHR.should.exist;
+                    jqXHR.status.should.exist;
+                    jqXHR.responseJSON.should.exist;
+                    jqXHR.status.should.deep.equal(400);
+                    jqXHR.responseJSON.error.should.deep.equal('bad_location_arg_lat');
+                    done();
+                });
+        });
+
+        it('Doit retourner la liste des pharmacies de la plus proche à la plus éloignée', function(done) {
+            $.ajax({
+                    url: document.location.origin + '/v1/pharmacies/locations?long=5.731214&lat=45.166471',
+                    type: 'get'
+                })
+                .always(function (data, textStatus, jqXHR) {
+                    chai.expect(data[0].distance < data[1].distance).to.be.true;
+                    done();
+                });
+        });
 
     });
 });

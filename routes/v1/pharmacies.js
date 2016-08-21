@@ -77,6 +77,7 @@ router.route('/locations/')
                 count = result.count,
                 statusCode = (docs.length === count) ? 200 : 206;
 
+                response.setHeader('Access-Control-Allow-Origin', '*');
                 response.setHeader('Content-Range', `${options.skip}-${options.skip + docs.length - 1}/${count}`);
                 response.setHeader('Accept-Range', `pharmacie ${RANGE_DEFAULT}`);
 
@@ -129,6 +130,7 @@ router.route('/search/')
                 count = result.count,
                 statusCode = (docs.length === count) ? 200 : 206;
 
+                response.setHeader('Access-Control-Allow-Origin', '*');
                 response.setHeader('Content-Range', `${options.skip}-${options.skip + docs.length - 1}/${count}`);
                 response.setHeader('Accept-Range', `pharmacie ${RANGE_DEFAULT}`);
 
@@ -172,6 +174,7 @@ router.route('/')
                     count = result.count,
                     statusCode = (docs.length === count) ? 200 : 206;
 
+                response.setHeader('Access-Control-Allow-Origin', '*');
                 response.setHeader('Content-Range', `${options.skip}-${options.skip + docs.length - 1}/${count}`);
                 response.setHeader('Accept-Range', `pharmacie ${RANGE_DEFAULT}`);
 
@@ -196,6 +199,7 @@ router.route('/')
         if (err) {
             handleError(response, 'create_pharmacie_failed', err.message);
         } else {
+            response.setHeader('Access-Control-Allow-Origin', '*');
             // On retourne l'URI et l'identifiant de la nouvelle pharmacie dans le header "Location" de la réponse.
             response.location(`${request.get('origin')}/v1/pharmacies/${numAffected.upserted[0]._id}`);
             // On retourne le code HTTP 201 pour indiquer que la pharmacie est bien créée.
@@ -224,7 +228,7 @@ router.route('/:id')
                 handleError(response, 'find_pharmacie_failed', `La pharmacie d'id ${request.params.id} n'existe pas`, 404);
                 return;
             }
-
+            response.setHeader('Access-Control-Allow-Origin', '*');
             // On retourne la pharmacie avec un HTTP Status Code 200.
             response.status(200).json(doc[0]);
         }
@@ -247,6 +251,7 @@ router.route('/:id')
             // Si création de la pharmacie, on retourne l'URI et l'identifiant de la nouvelle pharmacie dans le header "Location" de la réponse.
             doc.upserted && response.location(`${request.get('origin')}/v1/pharmacies/${doc.upserted[0]._id}`);
 
+            response.setHeader('Access-Control-Allow-Origin', '*');
             response.status(statusCode).json(doc);
         }
     });
@@ -267,6 +272,8 @@ router.route('/:id')
                 return;
             }
 
+            response.setHeader('Access-Control-Allow-Origin', '*');
+
             // Définition du status code suivant la pharmacie est mise à jour ou si il n'y a eu aucune mise à jour.
             let statusCode = (doc.nModified) ? 200 : 204 ;
 
@@ -281,6 +288,7 @@ router.route('/:id')
         if (err) {
             handleError(response, 'delete_pharmacie_failed', err.message);
         } else {
+            response.setHeader('Access-Control-Allow-Origin', '*');
             response.status(204).end();
         }
     });

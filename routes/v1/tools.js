@@ -157,21 +157,27 @@ class Tools {
             queries = {};
 
         // On récupère les critères de recherche dans la requête en excluant les paramètres ne correspondant pas à la recherche (ex: sort, desc, range, ...)
-        let searchParameters = _.pick(request.query, ['rs', 'numvoie', 'typvoie', 'voie', 'cpville', 'telephone', 'fax', 'coordxet', 'coordyet']);
+        let searchParameters = _.pick(request.query, ['_id', 'numvoie', 'typvoie', 'voie', 'cpville', 'telephone', 'fax', 'coordxet', 'coordyet']);
 
         // Parcours des champs de recherche
         _.forEach(searchParameters, (value, param) => {
 
-            // Erreur si la valeur du paramètre de recherche n'est pas bonne
-            if (!/^\*?[\wàèìòùÀÈÌÒÙáéíóúýÁÉÍÓÚÝâêîôûÂÊÎÔÛãñõÃÑÕäëïöüÿÄËÏÖÜŸçÇßØøÅåÆæœ-\s]*\*?$/.test(value)) {
-                error = {
-                    error: 'search_bad_syntax',
-                    error_description: `Bad syntax of search parameter '${param}'`
-                };
+            // Recherche sur une collection (ex: rs=[1234,1235,1236])
+            if (/^\[([\wàèìòùÀÈÌÒÙáéíóúýÁÉÍÓÚÝâêîôûÂÊÎÔÛãñõÃÑÕäëïöüÿÄËÏÖÜŸçÇßØøÅåÆæœ-\s]+\,)*[\wàèìòùÀÈÌÒÙáéíóúýÁÉÍÓÚÝâêîôûÂÊÎÔÛãñõÃÑÕäëïöüÿÄËÏÖÜŸçÇßØøÅåÆæœ-\s]+\]$/
+                .test(value)) {
+                queries[param] = { "$in": value.substr(1,value.length-2).split(',') };
             } else {
-                value = (value[0] === '*') && value.substr(1,value.length) || '^' + value;
-                value = (value[value.length - 1] === '*') && value.substr(0, value.length - 1) || value + '$';
-                queries[param] = new RegExp(value, 'i');
+                // Erreur si la valeur du paramètre de recherche n'est pas bonne
+                if (!/^\*?[\wàèìòùÀÈÌÒÙáéíóúýÁÉÍÓÚÝâêîôûÂÊÎÔÛãñõÃÑÕäëïöüÿÄËÏÖÜŸçÇßØøÅåÆæœ-\s]*\*?$/.test(value)) {
+                    error = {
+                        error: 'search_bad_syntax',
+                        error_description: `Bad syntax of search parameter '${param}'`
+                    };
+                } else {
+                    value = (value[0] === '*') && value.substr(1, value.length) || '^' + value;
+                    value = (value[value.length - 1] === '*') && value.substr(0, value.length - 1) || value + '$';
+                    queries[param] = new RegExp(value, 'i');
+                }
             }
         });
 

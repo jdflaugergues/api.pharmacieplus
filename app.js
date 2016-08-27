@@ -30,8 +30,10 @@ app.use('/node_modules', express.static(path.join(__dirname, 'node_modules')));
 // Chargement des modules de routage
 const routes = require('./routes/index');
 const pharmaciesRoutes = require('./routes/v1/pharmacies');
+const opinionsRoutes = require('./routes/v1/opinions');
 app.use('/', routes);
 app.use('/v1/pharmacies', pharmaciesRoutes); // Requêtes vers /pharmacies/*
+app.use('/v1/', opinionsRoutes); // Requêtes vers /*
 
 
 app.get('/health', function(req, res) {
@@ -109,6 +111,25 @@ app.listen(process.env.OPENSHIFT_NODEJS_PORT || '8080', process.env.OPENSHIFT_NO
 
 //const ImportData = require('./app/importdata/importdata');
 //ImportData.process();
+
+
+/*
+const AbstractDAOFactory = require('./app/dao/abstractdaofactory');
+
+let adf = AbstractDAOFactory.getFactory(AbstractDAOFactory.DAO_FACTORY),
+    opinionDAO = adf.getOpinionDAO();
+
+
+  // On crée la pharmacie si elle n'existe pas, sinon on la met à jour (upsert: true)
+  opinionDAO.create({rate: 3, name: 'Jonathan', content: 'Cette pharmacie est une bonne pharmacie 2.'},(err, numAffected) => {
+    if (err) {
+      debug(`Failed to create new pharmacies : ${err.message}`);
+    } else {
+      debug(numAffected);
+    }
+  });
+*/
+
 
 
 //module.exports = app;

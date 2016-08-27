@@ -1,5 +1,5 @@
 /**
- * Fichier de routeage pharmacie.js
+ * Fichier de routage pharmacie.js
  * Gestionnaire de route modulaire pour les API REST Pharmacie.
  * @type {*|exports|module.exports}
  */

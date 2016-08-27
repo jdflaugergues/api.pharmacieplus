@@ -26,6 +26,11 @@ class AbstractDAOFactory {
         if (typeof this.getPharmacieDAO !== 'function') {
             throw new TypeError('Must override method getPharmacieDAO');
         }
+
+        // Méthode de récupération de l'objet OpinionDAO
+        if (typeof this.getOpinionDAO !== 'function') {
+            throw new TypeError('Must override method getOpinionDAO');
+        }
     }
 
     //Méthode permettant de récupérer les Factory

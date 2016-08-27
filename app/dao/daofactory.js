@@ -5,7 +5,8 @@
 
 const PPConnection = require('../connection/PPConnection'),
       AbstractDAOFactory = require('./abstractdaofactory'),
-      PharmacieDAO = require('./implement/pharmaciedao');
+      PharmacieDAO = require('./implement/pharmaciedao'),
+      OpinionDAO = require('./implement/opiniondao');
 
 'use strict';
 
@@ -21,6 +22,11 @@ class DAOFactory extends AbstractDAOFactory {
     // Retourne un objet Pharmacie interagissant avec la BDD
     getPharmacieDAO(){
         return new PharmacieDAO(conn);
+    }
+
+    // Retourne un objet Opinion interagissant avec la BDD
+    getOpinionDAO(){
+        return new OpinionDAO(conn);
     }
 }
 

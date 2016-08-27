@@ -288,20 +288,6 @@ describe('API REST Pharmacie', function() {
     });
 
     describe('Recherche des ressources', function() {
-        it('Doit retourner une erreur de syntaxe', function(done) {
-            $.ajax({
-                    url: document.location.origin + '/v1/pharmacies/search?rs=**test**',
-                    type: 'get'
-                })
-                .always(function (jqXHR, textStatus, errorThrown) {
-                    jqXHR.should.exist;
-                    jqXHR.status.should.exist;
-                    jqXHR.responseJSON.should.exist;
-                    jqXHR.status.should.deep.equal(400);
-                    jqXHR.responseJSON.error.should.deep.equal('search_bad_syntax');
-                    done();
-                });
-        });
 
         it('Doit retourner que des codes postaux 38100', function(done) {
             $.ajax({
@@ -340,7 +326,7 @@ describe('API REST Pharmacie', function() {
         })
     });
 
-    describe('Recherche des ressources', function() {
+    describe('Recherche des ressources géolocalisés', function() {
         it('Doit retourner une erreur si pas de coordonnées GPS', function(done) {
             $.ajax({
                 url: document.location.origin + '/v1/pharmacies/locations',
@@ -412,5 +398,24 @@ describe('API REST Pharmacie', function() {
                 });
         });
 
+    });
+
+    describe('Ajout d\'un commentaire', function() {
+        it('Doit créer le commentaire associée à la pharmacie', function(done) {
+            $.post({
+                url: document.location.origin + '/v1/pharmacies/1234/opinions/',
+                data: {rate: 4, name: 'Jonathan', content: 'Cette pharmacie est une bonne pharmacie.'}
+            })
+            .always(function (data, textStatus, jqXHR) {
+
+                jqXHR.should.exist,jqXHR.status.should.exist;
+                jqXHR.status.should.deep.equal(201);
+
+                var location = jqXHR.getResponseHeader('Location');
+                location.should.deep.match(/\/v1\/pharmacies\/1234\/opinions\//);
+
+                done();
+            });
+        });
     });
 });

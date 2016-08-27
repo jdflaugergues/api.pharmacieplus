@@ -418,4 +418,34 @@ describe('API REST Pharmacie', function() {
             });
         });
     });
+
+    describe('Recherche d\'avis d\'une pharmacie', function() {
+        it('Doit retourner dans l\'entête de réponse un "Accept-Range" correct.', function (done) {
+            $.ajax({
+                    url: document.location.origin + '/v1/pharmacies/1234/opinions/',
+                    type: 'get'
+                })
+                .always(function (data, textStatus, jqXHR) {
+                    var acceptRange = jqXHR.getResponseHeader('Accept-Range');
+                    acceptRange.should.deep.equal('opinion 25');
+                    done();
+                });
+        });
+
+        it('Doit retourner dans l\entête de réponse un "Accept-Range" correct.', function (done) {
+            $.ajax({
+                    url: document.location.origin + '/v1/pharmacies/1234/opinions/',
+                    type: 'get'
+                })
+                .always(function (data, textStatus, jqXHR) {
+                    var ar = jqXHR.getResponseHeader('Accept-Range');
+                    ar.should.deep.match(/^opinion \d*$/);
+
+                    acceptRange = ar.match(/\d*$/)[0];
+
+                    done();
+                });
+        });
+    });
+
 });

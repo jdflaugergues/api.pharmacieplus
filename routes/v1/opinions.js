@@ -31,7 +31,7 @@ router.use(function timeLog(req, res, next) {
 });
 
 
-// Route '/v1/pharmacies/id/'
+// Route '/v1/pharmacies/id/opinions'
 router.route('/pharmacies/:id/opinions/')
 
     // Création d'un avis d'une pharmacie avec génération automatique de l'id.
@@ -53,8 +53,49 @@ router.route('/pharmacies/:id/opinions/')
                 // On retourne le code HTTP 201 pour indiquer que l'avis de la pharmacie est bien créé.
                 response.status(201).json(numAffected);
             }
-    });
-});
+        });
+    })
 
+
+    // Recherche d'une collection d'avis d'une pharmacie
+    .get((request, response, next) => {
+
+        // Création des options à partir du range de la requête.
+        let options = Tools.createRangeOptions(request, RANGE_DEFAULT);
+
+        // Ajout dans les options, les paramètres de tri.
+        options = Tools.createSortOptions(request, options);
+
+        // Erreur si la paramètre range est incorrect.
+        if (options.error) {
+            handleError(response, options.error, options.error_description, 400);
+        } else {
+
+            // Préparation du paramètre fields de la requête pour une réponse partielle.
+            let fields = Tools.createFieldsArg(request);
+
+            opinionDAO.find({pharmacie: request.params.id}, fields, options, (err, result) => {
+                if (err) {
+                    handleError(response, 'find_opinion_failed', err.message);
+                } else {
+                    let docs = result.docs,
+                    count = result.count,
+                    statusCode = (docs.length === count) ? 200 : 206;
+
+                    response.setHeader('Access-Control-Allow-Origin', '*');
+                    response.setHeader('Content-Range', `${options.skip}-${options.skip + docs.length - 1}/${count}`);
+                    response.setHeader('Accept-Range', `opinion ${RANGE_DEFAULT}`);
+
+                    // On n'ajoute l'entête "Link" seulement sur les requêtes demandant une pagination.
+                    if (request.query.range) {
+                        let linkHttpHeader = Tools.createLinkHTTPHeader(request, options.skip, options.limit, parseInt(count, 10));
+                        response.setHeader('Link', linkHttpHeader);
+                    }
+
+                    response.status(statusCode).json(docs);
+                }
+            });
+        }
+    });
 
 module.exports = router;

@@ -11,6 +11,7 @@ const OpinionSchema = new mongoose.Schema({
     name: { $type: String },        // Auteur de l'avis
     content: { $type: String },     // Contenu de l'avis
     pharmacie: { $type: String },   // Id de la pharmacie
+    timestamp: { $type: String }    // Date de l'avis
 }, { typeKey: '$type' });
 
 

@@ -38,6 +38,7 @@ router.route('/pharmacies/:id/opinions/')
     .post((request, response, next) => {
         let newOpinion = request.body,
             pharmacieId = request.params.id;
+        debug(request);
 
         newOpinion.createdDate = new Date();
         newOpinion.pharmacie = pharmacieId;

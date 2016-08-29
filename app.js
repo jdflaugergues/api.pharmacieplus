@@ -31,9 +31,12 @@ app.use('/node_modules', express.static(path.join(__dirname, 'node_modules')));
 const routes = require('./routes/index');
 const pharmaciesRoutes = require('./routes/v1/pharmacies');
 const opinionsRoutes = require('./routes/v1/opinions');
+const publishSubscribeRoutes = require('./routes/v1/publishSubscribe');
+
 app.use('/', routes);
 app.use('/v1/pharmacies', pharmaciesRoutes); // Requêtes vers /pharmacies/*
 app.use('/v1/', opinionsRoutes); // Requêtes vers /*
+app.use('/v1/', publishSubscribeRoutes); // Requêtes vers /*
 
 
 app.get('/health', function(req, res) {

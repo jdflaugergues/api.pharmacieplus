@@ -7,6 +7,7 @@ const express = require('express'),
     _ = require('lodash'),
     router = express.Router(),
     AbstractDAOFactory = require('../../app/dao/abstractdaofactory'),
+    Events = require('../../app/publishSubscribe/Events'),
     Tools = require('./tools'),
     debug = require('debug')('pharmacieplus:opinions:API:REST');
 
@@ -38,7 +39,6 @@ router.route('/pharmacies/:id/opinions/')
     .post((request, response, next) => {
         let newOpinion = request.body,
             pharmacieId = request.params.id;
-        debug(request);
 
         newOpinion.createdDate = new Date();
         newOpinion.pharmacie = pharmacieId;
@@ -47,7 +47,10 @@ router.route('/pharmacies/:id/opinions/')
             if (err) {
                 handleError(response, 'create_opinion_failed', err.message);
             } else {
-                debug(numAffected);
+
+                // On publie le commentaire pour que les abonnés de la pharmacie soient notifiés
+                Events.publish(newOpinion, pharmacieId);
+
                 response.setHeader('Access-Control-Allow-Origin', '*');
                 // On retourne l'URI et l'identifiant du nouvel avis de la pharmacie dans le header "Location" de la réponse.
                 response.location(`${request.get('origin')}/v1/pharmacies/${pharmacieId}/opinions/${numAffected._id}`);

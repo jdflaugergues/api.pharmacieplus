@@ -448,4 +448,31 @@ describe('API REST Pharmacie', function() {
         });
     });
 
+    describe(`Test Publish/Subscribe`, function() {
+        it(`Abonnement d'un utilisateur à plusieurs pharmacie`, function(done) {
+            $.ajax({
+                    url: document.location.origin + '/v1/subscribe?pharmacies=[1234,2345]&listener=subscriber1',
+                    type: 'get'
+                })
+                .always(function (jqXHR) {
+                    jqXHR.status.should.deep.equal(200);
+                    done();
+                });
+        });
+
+        it(`Désabonnement d'un utilisateur à plusieurs pharmacie`, function(done) {
+            $.ajax({
+                    url: document.location.origin + '/v1/unsubscribe?pharmacies=[1234,2345]&listener=subscriber1',
+                    type: 'get'
+                })
+                .always(function (jqXHR) {
+                    jqXHR.status.should.deep.equal(200);
+                    done();
+                });
+        });
+    })
+
+
+
+
 });

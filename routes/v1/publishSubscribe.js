@@ -17,7 +17,7 @@ router.route('/subscribe')
     let pharmaciesSubscribed = request.query.pharmacies.substr(1,request.query.pharmacies.length-2).split(',')
 
     // On abonne l'utilisateur à tous les ids des pharmacies demandées.
-    _.each(pharmaciesSubscribed, (pharmacieId) => Events.subscribe(pharmacieId, request.query.listener) );
+    _.each(pharmaciesSubscribed, (pharmacieId) => Events.subscribe(pharmacieId, request.query.subscriber) );
 
     response.setHeader('Access-Control-Allow-Origin', '*');
 
@@ -36,7 +36,7 @@ router.route('/unsubscribe')
     let pharmaciesSubscribed = request.query.pharmacies.substr(1,request.query.pharmacies.length-2).split(',')
 
     // On abonne l'utilisateur à tous les ids des pharmacies demandées.
-    _.each(pharmaciesSubscribed, (pharmacieId) => Events.unsubscribe(pharmacieId, request.query.listener) );
+    _.each(pharmaciesSubscribed, (pharmacieId) => Events.unsubscribe(pharmacieId, request.query.subscriber) );
 
     response.setHeader('Access-Control-Allow-Origin', '*');
 

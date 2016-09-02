@@ -109,6 +109,8 @@ app.listen(process.env.OPENSHIFT_NODEJS_PORT || '8080', process.env.OPENSHIFT_NO
   debug(`Application worker ${process.pid} started...`);
 });
 
+
+
 //const TestGeo = require('./app/test-geo');
 //TestGeo.process();
 

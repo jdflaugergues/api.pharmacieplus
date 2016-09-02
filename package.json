@@ -25,6 +25,8 @@
     "mongodb": "^2.2.1",
     "mongoose": "^4.5.4",
     "morgan": "~1.6.1",
+    "node-gcm": "^0.14.4",
+    "pushwoosh-client": "^1.3.0",
     "readline": "^1.3.0",
     "serve-favicon": "~2.3.0",
     "sinon": "^1.17.5",

@@ -49,7 +49,7 @@ router.route('/pharmacies/:id/opinions/')
             } else {
 
                 // On publie le commentaire pour que les abonnés de la pharmacie soient notifiés
-                Events.publish(newOpinion.content, pharmacieId);
+                Events.publish(pharmacieId, newOpinion.content);
 
                 response.setHeader('Access-Control-Allow-Origin', '*');
                 // On retourne l'URI et l'identifiant du nouvel avis de la pharmacie dans le header "Location" de la réponse.

@@ -110,31 +110,8 @@ app.listen(process.env.OPENSHIFT_NODEJS_PORT || '8080', process.env.OPENSHIFT_NO
 });
 
 
-
-//const TestGeo = require('./app/test-geo');
-//TestGeo.process();
-
 //const ImportData = require('./app/importdata/importdata');
 //ImportData.process();
-
-
-/*
-const AbstractDAOFactory = require('./app/dao/abstractdaofactory');
-
-let adf = AbstractDAOFactory.getFactory(AbstractDAOFactory.DAO_FACTORY),
-    opinionDAO = adf.getOpinionDAO();
-
-
-  // On crée la pharmacie si elle n'existe pas, sinon on la met à jour (upsert: true)
-  opinionDAO.create({rate: 3, name: 'Jonathan', content: 'Cette pharmacie est une bonne pharmacie 2.'},(err, numAffected) => {
-    if (err) {
-      debug(`Failed to create new pharmacies : ${err.message}`);
-    } else {
-      debug(numAffected);
-    }
-  });
-*/
-
 
 
 //module.exports = app;

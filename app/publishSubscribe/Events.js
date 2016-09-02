@@ -42,18 +42,25 @@ class Events {
 
     // On publie un commentaire sur une pharmacie
     // Tous les abonnés sont notifiés.
-    static publish(pharmacie, message) {
+    static publish(pharmacieId, message) {
 
         // Si il n'y aucun abonné sur cette pharmacie, on ne fait rien.
-        if (!Events.pharmacies.hasOwnProperty.call(Events.pharmacies, pharmacie.id)) return;
+        if (!Events.pharmacies.hasOwnProperty.call(Events.pharmacies, pharmacieId)) return;
+
+
+        // Options du push de notification.
+        let options = {
+            "platforms": [3],
+            "android_header": "Nouvel avis"
+        }
 
         // Envoi de la notification push à tous les abonnés
-        client.sendMessage(message, Events.pharmacies[pharmacie.id], (error, response) => {
+        client.sendMessage(message, Events.pharmacies[pharmacieId], options, (error, response) => {
             if (error) {
                 debug(`Some error occurs: ${error}`);
             }
 
-            debug(`Pushwoosh API response is ${response}`);
+            debug(`Pushwoosh API response is ${JSON.stringify(response)}`);
         });
     }
 }

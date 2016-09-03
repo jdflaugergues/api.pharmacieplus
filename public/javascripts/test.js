@@ -423,7 +423,7 @@ describe('API REST Pharmacie', function() {
         it('Doit retourner dans l\'entête de réponse un "Accept-Range" correct.', function (done) {
             $.ajax({
                     url: document.location.origin + '/v1/pharmacies/1234/opinions/',
-                    type: 'get'
+                    type: 'get',
                 })
                 .always(function (data, textStatus, jqXHR) {
                     var acceptRange = jqXHR.getResponseHeader('Accept-Range');
@@ -472,7 +472,27 @@ describe('API REST Pharmacie', function() {
         });
     })
 
-
+    describe(`Test horaires d'ouverture`, function() {
+        it(`Ajout d'une horaire à une pharmacie`, function(done) {
+            $.ajax({
+                    url: document.location.origin + '/v1/pharmacies/040002271',
+                    data: {hours: {
+                        mo: { amo: 480, amc:720, pmo: 840, pmc: 1140 },
+                        tu: { amo: 480, amc:720, pmo: 840, pmc: 1140 },
+                        we: { amo: 480, amc:720, pmo: 840, pmc: 1140 },
+                        th: { amo: 480, amc:720, pmo: 840, pmc: 1140 },
+                        fr: { amo: 480, amc:720, pmo: 840, pmc: 1140 },
+                        sa: { amo: 480, amc:720, pmo: 840, pmc: 1140 },
+                        su: { amo: 0, amc:0, pmo: 0, pmc: 0 }
+                    }},
+                    type: 'patch'
+                })
+                .always(function (data) {
+                    console.log(data)
+                    done();
+                });
+        });
+    });
 
 
 });

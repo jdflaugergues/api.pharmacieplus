@@ -14,6 +14,15 @@ const PharmacieSchema = new mongoose.Schema({
     telephone: { $type: String },  // Numéro de téléphone
     fax: { $type: String },        // Numéro de fax
     loc: [Number],                 // Coordonnées Géographiques
+    hours: {
+        mo: { amo: {$type: Number}, amc: {$type: Number}, pmo: {$type: Number}, pmc: {$type: Number} },
+        tu: { amo: {$type: Number}, amc: {$type: Number}, pmo: {$type: Number}, pmc: {$type: Number} },
+        we: { amo: {$type: Number}, amc: {$type: Number}, pmo: {$type: Number}, pmc: {$type: Number} },
+        th: { amo: {$type: Number}, amc: {$type: Number}, pmo: {$type: Number}, pmc: {$type: Number} },
+        fr: { amo: {$type: Number}, amc: {$type: Number}, pmo: {$type: Number}, pmc: {$type: Number} },
+        sa: { amo: {$type: Number}, amc: {$type: Number}, pmo: {$type: Number}, pmc: {$type: Number} },
+        su: { amo: {$type: Number}, amc: {$type: Number}, pmo: {$type: Number}, pmc: {$type: Number} },
+    },
     distance: Number               // Distance de la pharmacie par rapport à un point donnée (en mètre)
 }, { typeKey: '$type' });
 

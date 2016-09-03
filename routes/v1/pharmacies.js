@@ -261,6 +261,9 @@ router.route('/:id')
 .patch((request, response, next) => {
     var pharmacie = _.extend(request.body, {_id: request.params.id});
 
+    // Formate les horaires passées en paramètre au bon format pour insertion.
+    pharmacie.hours = Tools.formatHours(request);
+
     pharmacieDao.update(pharmacie, (err, doc) => {
 
         if (err) {

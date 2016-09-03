@@ -145,6 +145,24 @@ class Tools {
         return pharmacies;
     }
 
+    // Formate les horaires d'ouverture contenu dans la requêt en un objet JSON correct pour l'insertion en base de données.
+    static formatHours(request) {
+        let rb = request.body;
+
+        if (rb['hours[mo][amo]']){
+
+            return {
+                mo: { amo: rb['hours[mo][amo]'], amc: rb['hours[mo][amc]'], pmo: rb['hours[mo][pmo]'], pmc: rb['hours[mo][pmc]'] },
+                tu: { amo: rb['hours[tu][amo]'], amc: rb['hours[tu][amc]'], pmo: rb['hours[tu][pmo]'], pmc: rb['hours[tu][pmc]'] },
+                we: { amo: rb['hours[we][amo]'], amc: rb['hours[we][amc]'], pmo: rb['hours[we][pmo]'], pmc: rb['hours[we][pmc]'] },
+                th: { amo: rb['hours[th][amo]'], amc: rb['hours[th][amc]'], pmo: rb['hours[th][pmo]'], pmc: rb['hours[th][pmc]'] },
+                fr: { amo: rb['hours[fr][amo]'], amc: rb['hours[fr][amc]'], pmo: rb['hours[fr][pmo]'], pmc: rb['hours[fr][pmc]'] },
+                sa: { amo: rb['hours[sa][amo]'], amc: rb['hours[sa][amc]'], pmo: rb['hours[sa][pmo]'], pmc: rb['hours[sa][pmc]'] },
+                su: { amo: rb['hours[su][amo]'], amc: rb['hours[su][amc]'], pmo: rb['hours[su][pmo]'], pmc: rb['hours[su][pmc]'] }
+            };
+        } else return {};
+    }
+
     // Fonction permettant de créer le paramètre de recherche dans la base de données MongoDB en fonction des paramètres
     // présents dans l'URL. Pour chaque paramètres de l'URL correspondant à un champ en base de données est associé la valeur
     // de recherche. Cette valeur de recherche peut être couplé au "joker (*)" au début et/ou à la fin de la valeur pour

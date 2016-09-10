@@ -258,6 +258,36 @@ router.route('/:id')
 })
 
 // Mise à jour partielle d'une pharmacie.
+.post((request, response, next) => {
+    var pharmacie = _.extend(request.body, {_id: request.params.id});
+    debug(pharmacie)
+
+    if (pharmacie.hours)
+        pharmacie.hours = JSON.parse(pharmacie.hours);
+
+    pharmacieDao.update(pharmacie, (err, doc) => {
+
+        if (err) {
+            handleError(response, 'update_pharmacie_failed', err.message);
+        }else {
+            debug(doc)
+            // La pharmacie avec cet id n'existe pas, on génère une erreur 404
+            if (doc.n === 0) {
+                handleError(response, 'update_pharmacie_failed', `La pharmacie d'id ${request.params.id} n'existe pas`, 404);
+                return;
+            }
+
+            response.setHeader('Access-Control-Allow-Origin', '*');
+
+            // Définition du status code suivant la pharmacie est mise à jour ou si il n'y a eu aucune mise à jour.
+            let statusCode = (doc.nModified) ? 200 : 204 ;
+            debug(doc)
+            response.status(statusCode).json(doc);
+        }
+    });
+})
+
+// Mise à jour partielle d'une pharmacie.
 .patch((request, response, next) => {
     var pharmacie = _.extend(request.body, {_id: request.params.id});
 

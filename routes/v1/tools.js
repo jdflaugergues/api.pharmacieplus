@@ -175,7 +175,7 @@ class Tools {
             queries = {};
 
         // On récupère les critères de recherche dans la requête en excluant les paramètres ne correspondant pas à la recherche (ex: sort, desc, range, ...)
-        let searchParameters = _.pick(request.query, ['_id', 'numvoie', 'typvoie', 'voie', 'cpville', 'telephone', 'fax', 'coordxet', 'coordyet']);
+        let searchParameters = _.pick(request.query, ['_id', 'numvoie', 'typvoie', 'voie', 'cpville', 'telephone', 'fax', 'coordxet', 'coordyet', 'hours.mo', 'hours.tu', 'hours.we', 'hours.th', 'hours.fr', 'hours.sa', 'hours.su']);
 
         // Parcours des champs de recherche
         _.forEach(searchParameters, (value, param) => {
@@ -184,6 +184,17 @@ class Tools {
             if (/^\[([\wàèìòùÀÈÌÒÙáéíóúýÁÉÍÓÚÝâêîôûÂÊÎÔÛãñõÃÑÕäëïöüÿÄËÏÖÜŸçÇßØøÅåÆæœ-\s]+\,)*[\wàèìòùÀÈÌÒÙáéíóúýÁÉÍÓÚÝâêîôûÂÊÎÔÛãñõÃÑÕäëïöüÿÄËÏÖÜŸçÇßØøÅåÆæœ-\s]+\]$/
                 .test(value)) {
                 queries[param] = { "$in": value.substr(1,value.length-2).split(',') };
+            } else if (param.indexOf('hours') != -1) {
+                let queryAm = {};
+                queryAm[param+'.amo'] = { "$lt": parseInt(value)};
+                queryAm[param+'.amc'] = { "$gt": parseInt(value)};
+
+                let queryPm = {};
+                queryPm[param+'.pmo'] = { "$lt": parseInt(value)};
+                queryPm[param+'.pmc'] = { "$gt": parseInt(value)};
+
+                queries["$or"] = [queryAm, queryPm];
+
             } else {
                 // Erreur si la valeur du paramètre de recherche n'est pas bonne
                 if (!/^\*?[\wàèìòùÀÈÌÒÙáéíóúýÁÉÍÓÚÝâêîôûÂÊÎÔÛãñõÃÑÕäëïöüÿÄËÏÖÜŸçÇßØøÅåÆæœ-\s]*\*?$/.test(value)) {

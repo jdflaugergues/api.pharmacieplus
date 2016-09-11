@@ -140,6 +140,9 @@ router.route('/search/')
                     response.setHeader('Link', linkHttpHeader);
                 }
 
+                // Ajoute aux pharmacies leur distance par rapport à la position de la requête.
+                let pharmacies = Tools.getDistanceFromLocations(request, docs);
+
                 response.status(statusCode).json(docs);
             }
         });

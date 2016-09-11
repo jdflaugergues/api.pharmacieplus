@@ -131,17 +131,28 @@ class Tools {
     // @return La liste des pharmacies avec la distance.
     static getDistanceFromLocations(request, pharmacies){
 
-        let origin = new LatLon(parseFloat(request.query.lat), parseFloat(request.query.long));
+        let origin;
 
-        // On étend chaque pharmacie de la collection avec la propriété distance qui correspond à la distance en mètre
-        // entre la pharmacie et la position de la requête (position de l'utilisateur)
-        _.map(pharmacies, (pharmacie) => {
-            pharmacie.distance = parseInt(origin.distanceTo(new LatLon(pharmacie.loc[1], pharmacie.loc[0])));
-        });
+        if (request.query.lat && request.query.long) {
+            origin = new LatLon(parseFloat(request.query.lat), parseFloat(request.query.long));
+        }
 
-        // On tri la collection des pharmacies de la plus proche à la plus éloignée.
-        pharmacies = _.orderBy(pharmacies, ['distance'], ['asc']);
+        if (request.query.loc) {
+            let loc = JSON.parse(request.query.loc)
+            origin = new LatLon(parseFloat(loc[1]), parseFloat(loc[0]));
+        }
 
+        if (origin) {
+
+            // On étend chaque pharmacie de la collection avec la propriété distance qui correspond à la distance en mètre
+            // entre la pharmacie et la position de la requête (position de l'utilisateur)
+            _.map(pharmacies, (pharmacie) => {
+                pharmacie.distance = parseInt(origin.distanceTo(new LatLon(pharmacie.loc[1], pharmacie.loc[0])));
+            });
+
+            // On tri la collection des pharmacies de la plus proche à la plus éloignée.
+            pharmacies = _.orderBy(pharmacies, ['distance'], ['asc']);
+        }
         return pharmacies;
     }
 

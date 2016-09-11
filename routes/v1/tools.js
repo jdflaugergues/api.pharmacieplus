@@ -195,7 +195,7 @@ class Tools {
             if (param === "loc") {
             
                 if (/\[-?\d+\.?\d*,-?\d+\.?\d*\]/.test(value))
-                    queries[param] = {'$near': JSON.parse(value), '$maxDistance': 150000};
+                    queries[param] = {'$near': JSON.parse(value), '$maxDistance': 10000};
 
             // Recherche sur une collection (ex: rs=[1234,1235,1236])
             } else if (/^\[([\wàèìòùÀÈÌÒÙáéíóúýÁÉÍÓÚÝâêîôûÂÊÎÔÛãñõÃÑÕäëïöüÿÄËÏÖÜŸçÇßØøÅåÆæœ-\s]+\,)*[\wàèìòùÀÈÌÒÙáéíóúýÁÉÍÓÚÝâêîôûÂÊÎÔÛãñõÃÑÕäëïöüÿÄËÏÖÜŸçÇßØøÅåÆæœ-\s]+\]$/

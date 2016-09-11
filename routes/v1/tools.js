@@ -175,13 +175,19 @@ class Tools {
             queries = {};
 
         // On récupère les critères de recherche dans la requête en excluant les paramètres ne correspondant pas à la recherche (ex: sort, desc, range, ...)
-        let searchParameters = _.pick(request.query, ['_id', 'numvoie', 'typvoie', 'voie', 'cpville', 'telephone', 'fax', 'coordxet', 'coordyet', 'hours.mo', 'hours.tu', 'hours.we', 'hours.th', 'hours.fr', 'hours.sa', 'hours.su']);
+        let searchParameters = _.pick(request.query, ['loc', '_id', 'numvoie', 'typvoie', 'voie', 'cpville', 'telephone', 'fax', 'coordxet', 'coordyet', 'hours.mo', 'hours.tu', 'hours.we', 'hours.th', 'hours.fr', 'hours.sa', 'hours.su']);
 
         // Parcours des champs de recherche
         _.forEach(searchParameters, (value, param) => {
 
+            // Recherche géolocalisée
+            if (param === "loc") {
+            
+                if (/\[-?\d+\.?\d*,-?\d+\.?\d*\]/.test(value))
+                    queries[param] = {'$near': JSON.parse(value), '$maxDistance': 150000};
+
             // Recherche sur une collection (ex: rs=[1234,1235,1236])
-            if (/^\[([\wàèìòùÀÈÌÒÙáéíóúýÁÉÍÓÚÝâêîôûÂÊÎÔÛãñõÃÑÕäëïöüÿÄËÏÖÜŸçÇßØøÅåÆæœ-\s]+\,)*[\wàèìòùÀÈÌÒÙáéíóúýÁÉÍÓÚÝâêîôûÂÊÎÔÛãñõÃÑÕäëïöüÿÄËÏÖÜŸçÇßØøÅåÆæœ-\s]+\]$/
+            } else if (/^\[([\wàèìòùÀÈÌÒÙáéíóúýÁÉÍÓÚÝâêîôûÂÊÎÔÛãñõÃÑÕäëïöüÿÄËÏÖÜŸçÇßØøÅåÆæœ-\s]+\,)*[\wàèìòùÀÈÌÒÙáéíóúýÁÉÍÓÚÝâêîôûÂÊÎÔÛãñõÃÑÕäëïöüÿÄËÏÖÜŸçÇßØøÅåÆæœ-\s]+\]$/
                 .test(value)) {
                 queries[param] = { "$in": value.substr(1,value.length-2).split(',') };
             } else if (param.indexOf('hours') != -1) {

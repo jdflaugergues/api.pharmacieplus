@@ -6,6 +6,7 @@ const express      = require('express'),
       logger       = require('morgan'),
       cookieParser = require('cookie-parser'),
       bodyParser   = require('body-parser'),
+      request      = require('request'),
       debug        = require('debug')('pharmacieplus:app'),
       contentTypes = require('./utils/content-types'),
       sysInfo      = require('./utils/sys-info'),
@@ -109,6 +110,12 @@ app.listen(process.env.OPENSHIFT_NODEJS_PORT || '8080', process.env.OPENSHIFT_NO
   debug(`Application worker ${process.pid} started...`);
 });
 
+
+request('http://api-pharmacieplus.rhcloud.com/v1/pharmacies', (error, response, body) => {
+  if (!error && response.statusCode == 200) {
+    debug(body);
+  }
+})
 
 //const ImportData = require('./app/importdata/importdata');
 //ImportData.process();

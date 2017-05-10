@@ -7,7 +7,7 @@ const fs = require('fs'),
       _ = require('lodash'),
       async = require('async'),
       debug = require('debug')('pharmacieplus:parserCSV'),
-      AbstractDAOFactory = require('./dao/abstractdaofactory');
+      AbstractDAOFactory = require('../app/dao/abstractdaofactory');
 
 'use strict';
 
